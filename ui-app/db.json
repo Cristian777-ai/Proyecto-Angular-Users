@@ -1,12 +1,20 @@
 {
   "users": [
-    { "id": 1, "name": "Juan Pérez",    "email": "juan@example.com",    "age": 30 },
-    { "id": 2, "name": "María López",   "email": "maria@example.com",   "age": 25 },
-    { "id": 3, "name": "Carlos García", "email": "carlos@example.com", "age": 40 }
-  ],
-  "auth": [
-    { "id": 1, "username": "juan",  "password": "juan123" },
-    { "id": 2, "username": "maria", "password": "maria123" },
-    { "id": 3, "username": "carlos","password": "carlos123" }
+    {
+      "id": 1,
+      "username": "juan",
+      "password": "1234",
+      "name": "Juan Pérez",
+      "email": "juan@x.com",
+      "age": 30
+    },
+    {
+      "id": 2,
+      "username": "ana",
+      "password": "abcd",
+      "name": "Ana Gómez",
+      "email": "ana@x.com",
+      "age": 25
+    }
   ]
 }
