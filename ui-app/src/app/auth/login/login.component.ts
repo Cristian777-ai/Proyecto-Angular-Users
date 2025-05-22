@@ -58,8 +58,11 @@ import { AuthService } from '../../services/auth.service';
     button { margin-top: 16px; width: 100%; }
   `]
 })
-export class LoginComponent implements OnInit {
-  form!: FormGroup;
+export class LoginComponent {
+  form = this.fb.group({
+    username: ['', Validators.required],
+    password: ['', Validators.required]
+  });
 
   constructor(
     private fb: FormBuilder,
@@ -68,35 +71,18 @@ export class LoginComponent implements OnInit {
     private snack: MatSnackBar
   ) {}
 
-  ngOnInit() {
-    
-    this.form = this.fb.group({
-      username: ['', Validators.required],
-      password: ['', Validators.required]
-    });
-  }
-
   onSubmit(): void {
     if (this.form.invalid) { return; }
-
     const { username, password } = this.form.value;
-    this.auth.login(username, password).subscribe({
+    this.auth.login(username!, password!).subscribe({
       next: resp => {
-        
-        this.snack.open('Bienvenido', 'Cerrar', {
-          duration: 3000,
-          verticalPosition: 'top'
-        });
+        console.log('login ok, redirigiendo a /users');
+        this.snack.open('Bienvenido', 'Cerrar', { duration: 3000, verticalPosition: 'top' });
         this.router.navigate(['/users']);
       },
-      error: (err: HttpErrorResponse) => {
-        const msg = err.status === 401
-          ? 'Credenciales inválidas'
-          : 'Error en el servidor';
-        this.snack.open(msg, 'Cerrar', {
-          duration: 3000,
-          verticalPosition: 'top'
-        });
+      error: err => {
+        const msg = err.status === 401 ? 'Credenciales inválidas' : 'Error en el servidor';
+        this.snack.open(msg, 'Cerrar', { duration: 3000, verticalPosition: 'top' });
       }
     });
   }
