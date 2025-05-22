@@ -1,33 +1,27 @@
-
+// src/app/services/user.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 
 export interface User {
   id: number;
   name: string;
   email: string;
-
+  age: number;
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class UserService {
-  private readonly API_URL = 'http://localhost:3000/users';
+  private readonly BASE = environment.apiUrl + '/users';
 
   constructor(private http: HttpClient) {}
 
-
   list(): Observable<User[]> {
-    return this.http.get<User[]>(this.API_URL);
+    return this.http.get<User[]>(this.BASE);
   }
 
-  /**
-   * 
-   * @param id 
-   */
   getById(id: number): Observable<User> {
-    return this.http.get<User>(`${this.API_URL}/${id}`);
+    return this.http.get<User>(`${this.BASE}/${id}`);
   }
 }
