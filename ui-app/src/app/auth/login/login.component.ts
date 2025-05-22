@@ -1,5 +1,6 @@
 // src/app/auth/login/login.component.ts
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';      // ← nuevo
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
 import { MatFormFieldModule }  from '@angular/material/form-field';
@@ -13,6 +14,7 @@ import { AuthService } from '../../services/auth.service';
   selector: 'app-login',
   standalone: true,
   imports: [
+    CommonModule,                 // ← aquí
     ReactiveFormsModule,
     RouterModule,
     MatFormFieldModule,
@@ -43,18 +45,7 @@ import { AuthService } from '../../services/auth.service';
       </button>
     </form>
   `,
-  styles: [`
-    .login-form {
-      max-width: 360px;
-      margin: 80px auto;
-      padding: 24px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      background: #fff;
-    }
-    .full-width { width: 100%; }
-    button { margin-top: 16px; width: 100%; }
-  `]
+  styles: [/* tus estilos */]
 })
 export class LoginComponent {
   form: FormGroup;
@@ -65,7 +56,6 @@ export class LoginComponent {
     private router: Router,
     private snack: MatSnackBar
   ) {
-    // Inicializamos el form aquí, después de que fb esté inyectado
     this.form = this.fb.group({
       username: ['', Validators.required],
       password: ['', Validators.required]
