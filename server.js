@@ -7,7 +7,7 @@ const PORT    = process.env.PORT || 8080;
 
 app.use(express.json());
 
-const db = JSON.parse(fs.readFileSync(path.join(__dirname, 'db.json'), 'utf8'));
+const db = JSON.parse(fs.readFileSync(path.join(__dirname, 'ui-app/db.json'), 'utf8'));
 
 // Auth
 app.post('/auth/login', (req, res) => {
