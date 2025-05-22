@@ -1,0 +1,9 @@
+# Dependencias y builds
+node_modules/
+ui-app/node_modules/
+ui-app/dist/
+/ui-app/.angular/
+
+# Logs y sistema
+*.log
+.DS_Store
