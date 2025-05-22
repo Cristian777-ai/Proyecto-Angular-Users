@@ -1,22 +1,18 @@
-
+// src/main.ts
 import { bootstrapApplication } from '@angular/platform-browser';
-import {
-  provideRouter,
-  Routes
-} from '@angular/router';
-import { provideHttpClient }    from '@angular/common/http';
-import { provideAnimations }    from '@angular/platform-browser/animations';
+import { provideRouter, Routes } from '@angular/router';
+import { provideHttpClient }     from '@angular/common/http';
+import { provideAnimations }     from '@angular/platform-browser/animations';
 
-import { AppComponent }         from './app/app.component';
-import { LoginComponent }       from './app/auth/login/login.component';
-import { UserListComponent }    from './app/users/user-list/user-list.component';
-import { UserDetailComponent }  from './app/users/user-detail/user-detail.component';
-import { AuthGuard }            from './app/services/auth.guard';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AppComponent }          from './app/app.component';
+import { LoginComponent }        from './app/auth/login/login.component';
+import { UserListComponent }     from './app/users/user-list/user-list.component';
+import { UserDetailComponent }   from './app/users/user-detail/user-detail.component';
+import { AuthGuard }             from './app/services/auth.guard';
 
 const routes: Routes = [
-  { path: '',         redirectTo: 'login', pathMatch: 'full' },
-  { path: 'login',    component: LoginComponent },
+  { path: '',        redirectTo: 'login', pathMatch: 'full' },
+  { path: 'login',   component: LoginComponent },
   {
     path: 'users',
     component: UserListComponent,
@@ -27,13 +23,14 @@ const routes: Routes = [
     component: UserDetailComponent,
     canActivate: [AuthGuard]
   },
-  { path: '**',       redirectTo: '' }
+  { path: '**',      redirectTo: '' }
 ];
 
 bootstrapApplication(AppComponent, {
   providers: [
-    // registra el router standalone
-    provideRouter(routes)
+    provideRouter(routes),
+    provideHttpClient(),
+    provideAnimations()
   ]
 })
 .catch(err => console.error(err));
