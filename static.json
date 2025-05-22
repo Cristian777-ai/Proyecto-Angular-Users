@@ -1,7 +1,0 @@
-{
-  "root": "ui-app/dist/ui-app",
-  "clean_urls": false,
-  "routes": {
-    "/**": "index.html"
-  }
-}
