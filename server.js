@@ -3,18 +3,15 @@ const express = require('express');
 const path    = require('path');
 const app     = express();
 
-// Puerto
 const PORT = process.env.PORT || 8080;
 
-// Construye la ruta absoluta desde /app (Heroku)
-const buildDir = path.resolve(__dirname, 'ui-app', 'dist', 'ui-app');
+// Ajusta aquí la ruta al directorio "browser"
+const buildDir = path.resolve(__dirname, 'ui-app', 'dist', 'ui-app', 'browser');
 console.log('Sirviendo archivos desde:', buildDir);
 
-// Sirve estáticos
 app.use(express.static(buildDir));
 
-// SPA fallback
-app.get('*', (_, res) => {
+app.get('*', (_req, res) => {
   res.sendFile(path.join(buildDir, 'index.html'));
 });
 
