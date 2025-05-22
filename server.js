@@ -9,7 +9,7 @@ app.use(express.json());
 // 1) Rutas de API
 app.post('/auth/login', /* tu código de login */);
 app.get('/users', (_req, res) => {
-  const db = JSON.parse(fs.readFileSync(path.join(__dirname, 'db.json')));
+  const db = JSON.parse(fs.readFileSync(path.join(__dirname, 'ui-app/db.json')));
   const safe = db.users.map(({ password, ...u }) => u);
   res.json(safe);
 });
