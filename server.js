@@ -51,7 +51,7 @@ app.get('/users/:id', (req, res) => {
 
 // 4) Define buildDir apuntando al output correcto de Angular
 //    Ajusta si tu angular.json usa otro outputPath
-const buildDir = path.join(__dirname, 'ui-app', 'dist', 'ui-app');
+const buildDir = path.join(__dirname, 'ui-app', 'dist', 'browser');
 console.log(`📂 Sirviendo Angular desde: ${buildDir}`);
 
 // 5) Static middleware
