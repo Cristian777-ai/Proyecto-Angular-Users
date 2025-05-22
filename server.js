@@ -1,30 +1,12 @@
+const express = require('express');
+const path    = require('path');
+const app     = express();
 
-const jsonServer = require('json-server')
-const server     = jsonServer.create()
-const router     = jsonServer.router('db.json')
-const middlewares= jsonServer.defaults()
+app.use(express.static(path.join(__dirname, 'ui-app/dist/ui-app')));
 
-server.use(middlewares)
-server.use(jsonServer.bodyParser)
+app.get('/*', (_, res) =>
+  res.sendFile(path.join(__dirname, 'ui-app/dist/ui-app/index.html'))
+);
 
-
-server.post('/auth/login', (req, res) => {
-  const { username, password } = req.body
-  const user = router.db
-    .get('auth')
-    .find({ username, password })
-    .value()
-
-  if (user) {
-
-    res.jsonp({ token: 'fake-jwt-token' })
-  } else {
-    res.status(401).jsonp({ error: 'Credenciales inválidas' })
-  }
-})
-
-
-server.use(router)
-server.listen(3000, () => {
-  console.log('JSON Server listening on port 3000')
-})
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => console.log(`Listening on ${PORT}`));
