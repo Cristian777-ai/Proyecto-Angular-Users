@@ -90,24 +90,18 @@ export class UserListComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor(
-    private svc: UserService,
-    private router: Router
-  ) {}
+  constructor(private userSvc: UserService, private router: Router) {}
 
-  ngOnInit() {
-    this.loading = true;
-    this.error = null;
-    this.svc.list().subscribe({
-      next: users => {
-        this.users = users;
-        this.dataSource.data = users;
-        this.loading = false;
-      },
-      error: () => {
-        this.error = 'No se pudieron cargar los usuarios';
-        this.loading = false;
-      }
+ ngOnInit(): void {
+   this.userSvc.list().subscribe({
+     next: users => {
+       this.dataSource.data = users;
+       this.loading = false;
+       },
+     error: () => {
+       this.error = true;
+       this.loading = false;
+       }
     });
   }
 
