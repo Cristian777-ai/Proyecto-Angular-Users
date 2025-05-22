@@ -2,61 +2,67 @@
 const express = require('express');
 const path    = require('path');
 const fs      = require('fs');
-const app     = express();
-const PORT    = process.env.PORT || 8080;
 
-// 1. Middlewares básicos
+const app  = express();
+const PORT = process.env.PORT || 8080;
+
+// 1) JSON bodies
 app.use(express.json());
 
-// 2. Carga DB (asegúrate de que db.json está en la raíz y commiteado)
-const dbPath = path.join(__dirname, 'ui-app/db.json');
+// 2) Carga tu "base de datos" desde db.json en la raíz del proyecto
+const dbFile = path.join(__dirname, 'ui-app/db.json');
 let db = { users: [] };
 try {
-  db = JSON.parse(fs.readFileSync(dbPath, 'utf8'));
+  db = JSON.parse(fs.readFileSync(dbFile, 'utf8'));
 } catch (err) {
-  console.error('No se pudo leer db.json:', err);
+  console.error('⚠️  No pude leer db.json:', err);
   process.exit(1);
 }
 
-// 3. Endpoints de API (antes de static y catch-all)
-// 3.1 Login
+// 3) API Endpoints (antes del static)
+// 3.1 POST /auth/login
 app.post('/auth/login', (req, res) => {
   const { username, password } = req.body;
-  const u = db.users.find(x => x.username === username);
-  if (!u || u.password !== password) {
+  const user = db.users.find(u => u.username === username);
+  if (!user || user.password !== password) {
     return res.status(401).json({ message: 'Credenciales inválidas' });
   }
+  // mock token
   return res.json({ token: 'mock-token' });
 });
 
-// 3.2 Listar usuarios
+// 3.2 GET /users
 app.get('/users', (_req, res) => {
-  const safe = db.users.map(({ password, ...rest }) => rest);
+  // elimina contraseña antes de enviar
+  const safe = db.users.map(({ password, ...u }) => u);
   res.json(safe);
 });
 
-// 3.3 Detalle de usuario
+// 3.3 GET /users/:id
 app.get('/users/:id', (req, res) => {
   const id = Number(req.params.id);
-  const u  = db.users.find(x => x.id === id);
-  if (!u) return res.status(404).json({ message: 'Usuario no encontrado' });
-  const { password, ...safe } = u;
+  const user = db.users.find(u => u.id === id);
+  if (!user) {
+    return res.status(404).json({ message: 'Usuario no encontrado' });
+  }
+  const { password, ...safe } = user;
   res.json(safe);
 });
 
-// 4. Define buildDir **antes** de usarlo
-const buildDir = path.join(__dirname, 'ui-app', 'dist', 'ui-app', 'browser');
-console.log('Sirviendo archivos desde:', buildDir);
+// 4) Define buildDir apuntando al output correcto de Angular
+//    Ajusta si tu angular.json usa otro outputPath
+const buildDir = path.join(__dirname, 'ui-app', 'dist', 'ui-app');
+console.log(`📂 Sirviendo Angular desde: ${buildDir}`);
 
-// 5. Sirve la carpeta de Angular compilada
+// 5) Static middleware
 app.use(express.static(buildDir));
 
-// 6. Fallback: cualquier otra ruta, devuelve index.html
+// 6) Fallback para SPA: cualquier otra ruta, devuelve index.html
 app.get('*', (_req, res) => {
   res.sendFile(path.join(buildDir, 'index.html'));
 });
 
-// 7. Arranca el server
+// 7) Levanta el servidor
 app.listen(PORT, () => {
-  console.log(`Servidor escuchando en puerto ${PORT}`);
+  console.log(`🚀 Servidor corriendo en puerto ${PORT}`);
 });
