@@ -30,10 +30,5 @@ const routes: Routes = [
   { path: '**',       redirectTo: '' }
 ];
 
-bootstrapApplication(AppComponent, {
-  providers: [
-    provideRouter(routes),
-    provideHttpClient(),
-    provideAnimations()
-  ]
-}).catch(err => console.error(err));
+bootstrapApplication(AppComponent)
+  .catch(err => console.error(err));
