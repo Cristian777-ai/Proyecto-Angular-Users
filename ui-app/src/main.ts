@@ -30,5 +30,10 @@ const routes: Routes = [
   { path: '**',       redirectTo: '' }
 ];
 
-bootstrapApplication(AppComponent)
-  .catch(err => console.error(err));
+bootstrapApplication(AppComponent, {
+  providers: [
+    // registra el router standalone
+    provideRouter(routes)
+  ]
+})
+.catch(err => console.error(err));
