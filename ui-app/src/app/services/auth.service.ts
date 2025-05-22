@@ -1,37 +1,25 @@
-
+// src/app/services/auth.service.ts
 import { Injectable } from '@angular/core';
-import { HttpClient }   from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { tap }         from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private readonly BASE = '';
-  private _isLoggedIn$ = new BehaviorSubject<boolean>(!!localStorage.getItem('token'));
-  readonly isLoggedIn$ = this._isLoggedIn$.asObservable();
+  private readonly BASE = environment.apiUrl + '/auth';
 
   constructor(private http: HttpClient) {}
 
-  login(username: string, password: string): Observable<{ token: string }> {
-    return this.http
-      .post<{ token: string }>(`${this.BASE}/auth/login`, { username, password })
+  login(username: string, password: string): Observable<{token:string}> {
+    return this.http.post<{token:string}>(`${this.BASE}/login`, { username, password })
       .pipe(
-        tap(resp => {
-         
-          this.setToken(resp.token);
-        })
+        tap(resp => localStorage.setItem('token', resp.token))
       );
-  }
-
- 
-  setToken(token: string): void {
-    localStorage.setItem('token', token);
-    this._isLoggedIn$.next(true);
   }
 
   logout(): void {
     localStorage.removeItem('token');
-    this._isLoggedIn$.next(false);
   }
 
   getToken(): string | null {
