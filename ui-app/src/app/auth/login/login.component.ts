@@ -59,17 +59,19 @@ import { AuthService } from '../../services/auth.service';
   `]
 })
 export class LoginComponent {
-  form = this.fb.group({
-    username: ['', Validators.required],
-    password: ['', Validators.required]
-  });
+  form!: FormGroup;  // declara sin inicializar
 
   constructor(
     private fb: FormBuilder,
     private auth: AuthService,
     private router: Router,
     private snack: MatSnackBar
-  ) {}
+  ) {
+    // aquí ya fb está disponible
+    this.form = this.fb.group({
+      username: ['', Validators.required],
+      password: ['', Validators.required]
+    });
 
   onSubmit(): void {
     if (this.form.invalid) { return; }
