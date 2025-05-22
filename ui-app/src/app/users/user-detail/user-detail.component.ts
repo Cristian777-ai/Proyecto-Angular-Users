@@ -48,26 +48,17 @@ export class UserDetailComponent implements OnInit {
   error: string | null = null;
 
   constructor(
-    private svc: UserService,
-    private route: ActivatedRoute
-  ) {}
+  private userSvc: UserService,
+  private route: ActivatedRoute,
+  private router: Router
+) {}
 
-  ngOnInit(): void {
-    this.loading = true;
-    this.error = null;
-    const idParam = this.route.snapshot.paramMap.get('id');
-    const id = idParam ? Number(idParam) : NaN;
-    if (!isNaN(id)) {
-      this.svc.getById(id).subscribe({
-        next: u => {
-          this.user = u;
-          this.loading = false;
-        },
-        error: () => {
-          this.error = 'No se pudo cargar el usuario';
-          this.loading = false;
-        }
-      });
+ngOnInit(): void {
+  const id = Number(this.route.snapshot.paramMap.get('id'));
+  this.userSvc.getById(id).subscribe({
+    next: u => this.user = u,
+    error: () => this.error = true
+     });
     } else {
       this.error = 'ID de usuario inválido';
       this.loading = false;
