@@ -15,7 +15,8 @@ import { MatToolbarModule }     from '@angular/material/toolbar';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatIconModule }        from '@angular/material/icon';
 import { MatButtonModule }      from '@angular/material/button';
-
+import { MatSidenavModule }     from '@angular/material/sidenav';   // ← nuevo
+import { MatListModule }        from '@angular/material/list'; 
 import { LoginComponent }       from './auth/login/login.component';
 import { UserListComponent }    from './users/user-list/user-list.component';
 import { UserDetailComponent }  from './users/user-detail/user-detail.component';
@@ -30,7 +31,8 @@ import { AuthService }          from './services/auth.service';
     LoginComponent,
     UserListComponent,
     UserDetailComponent,
-
+    MatSidenavModule,    // ← imprescindible para <mat-sidenav>
+    MatListModule,
     MatToolbarModule,
     MatProgressBarModule,
     MatIconModule,
