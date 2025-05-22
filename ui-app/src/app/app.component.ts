@@ -26,7 +26,8 @@ import { AuthService } from './services/auth.service';
     MatToolbarModule,
     MatProgressBarModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    RouterModule.forRoot(routes)
   ],
   template: `
     <mat-toolbar color="primary">
