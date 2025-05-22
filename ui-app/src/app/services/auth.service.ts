@@ -6,7 +6,7 @@ import { tap }         from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private readonly BASE = 'http://localhost:3000';
+  private readonly BASE = '';
   private _isLoggedIn$ = new BehaviorSubject<boolean>(!!localStorage.getItem('token'));
   readonly isLoggedIn$ = this._isLoggedIn$.asObservable();
 
