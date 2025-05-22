@@ -1,4 +1,4 @@
-
+// src/app/app.component.ts
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
@@ -10,19 +10,27 @@ import {
   NavigationError,
   Event
 } from '@angular/router';
+
 import { MatToolbarModule }     from '@angular/material/toolbar';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatIconModule }        from '@angular/material/icon';
 import { MatButtonModule }      from '@angular/material/button';
-import { LoginComponent }  from './auth/login/login.component'; 
-import { AuthService } from './services/auth.service';
+
+import { LoginComponent }       from './auth/login/login.component';
+import { UserListComponent }    from './users/user-list/user-list.component';
+import { UserDetailComponent }  from './users/user-detail/user-detail.component';
+import { AuthService }          from './services/auth.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
     CommonModule,
-    RouterModule,
+    RouterModule,          // proporciona <router-outlet> y directivas de routing
+    LoginComponent,
+    UserListComponent,
+    UserDetailComponent,
+
     MatToolbarModule,
     MatProgressBarModule,
     MatIconModule,
@@ -57,7 +65,7 @@ import { AuthService } from './services/auth.service';
     }
     .global-spinner {
       position: fixed;
-      top: 64px;   
+      top: 64px;
       left: 0;
       width: 100%;
       z-index: 1000;
@@ -71,7 +79,7 @@ import { AuthService } from './services/auth.service';
 export class AppComponent {
   loading = false;
   private navStart = 0;
-  private readonly MIN_MS = 600;  
+  private readonly MIN_MS = 600;
 
   constructor(
     private router: Router,
@@ -98,7 +106,7 @@ export class AppComponent {
   }
 
   onLogout() {
-    this.auth.logout();           
+    this.auth.logout();
     this.router.navigate(['/login']);
   }
 }
