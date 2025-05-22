@@ -1,4 +1,3 @@
-// server.js (raíz)
 const express = require('express');
 const path    = require('path');
 const fs      = require('fs');
@@ -7,32 +6,28 @@ const PORT    = process.env.PORT || 8080;
 
 app.use(express.json());
 
-const db = JSON.parse(fs.readFileSync(path.join(__dirname, 'ui-app/db.json'), 'utf8'));
-
-// Auth
-app.post('/auth/login', (req, res) => {
-  const { username, password } = req.body;
-  const u = db.users.find(x => x.username === username);
-  if (!u || u.password !== password) {
-    return res.status(401).json({ message: 'Credenciales inválidas' });
-  }
-  res.json({ token: 'mock-token' });
+// 1) Rutas de API
+app.post('/auth/login', /* tu código de login */);
+app.get('/users', (_req, res) => {
+  const db = JSON.parse(fs.readFileSync(path.join(__dirname, 'ui-app/db.json')));
+  const safe = db.users.map(({ password, ...u }) => u);
+  res.json(safe);
 });
-
-// Users
-app.get('/users', (_q, r) =>
-  r.json(db.users.map(({ password, ...u }) => u))
-);
-app.get('/users/:id', (q, r) => {
-  const u = db.users.find(x => x.id === +q.params.id);
-  if (!u) return r.status(404).json({ message: 'No encontrado' });
+app.get('/users/:id', (req, res) => {
+  const db = JSON.parse(fs.readFileSync(path.join(__dirname, 'ui-app/db.json')));
+  const u = db.users.find(x => x.id === +req.params.id);
+  if (!u) return res.status(404).json({ message: 'No encontrado' });
   const { password, ...safe } = u;
-  r.json(safe);
+  res.json(safe);
 });
 
-// SPA
-const buildDir = path.resolve(__dirname, 'ui-app', 'dist', 'ui-app', 'browser');
+// 2) Servir archivos estáticos de Angular
+const buildDir = path.join(__dirname, 'ui-app', 'dist', 'ui-app', 'browser');
 app.use(express.static(buildDir));
-app.get('*', (_q, r) => r.sendFile(path.join(buildDir, 'index.html')));
+
+// 3) Fallback SPA
+app.get('*', (_req, res) => {
+  res.sendFile(path.join(buildDir, 'index.html'));
+});
 
 app.listen(PORT, () => console.log(`Listening on ${PORT}`));
