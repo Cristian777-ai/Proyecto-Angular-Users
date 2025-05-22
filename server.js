@@ -1,13 +1,23 @@
+
 const express = require('express');
 const path    = require('path');
 const app     = express();
 
-app.use(express.static(path.join(__dirname, 'ui-app/src/app/auth/login')));
-
-app.get('/*', (_, res) =>
-  res.sendFile(path.join(__dirname, 'ui-app/src/app/auth/login/login.component.ts'))
-);
 
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => console.log(`Listening on ${PORT}`));
 
+
+const buildPath = path.join(__dirname, 'ui-app', 'dist', 'ui-app');
+
+
+app.use(express.static(buildPath));
+
+
+app.get('/*', (req, res) => {
+  res.sendFile(path.join(buildPath, 'index.html'));
+});
+
+
+app.listen(PORT, () => {
+  console.log(`Server listening on port ${PORT}`);
+});
