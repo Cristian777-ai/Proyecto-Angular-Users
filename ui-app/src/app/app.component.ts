@@ -37,43 +37,37 @@ import { AuthService }          from './services/auth.service';
     MatButtonModule
   ],
   template: `
-    <mat-toolbar color="primary">
-      <span>Panel de Administración</span>
-      <span class="spacer"></span>
-      <button mat-icon-button aria-label="Cerrar sesión" (click)="onLogout()">
-        <mat-icon>exit_to_app</mat-icon>
-      </button>
-    </mat-toolbar>
+    <mat-sidenav-container class="app-container">
+      <mat-sidenav #drawer mode="side" opened>
+        <mat-nav-list>
+          <a mat-list-item routerLink="/users" routerLinkActive="active">Usuarios</a>
+          <a mat-list-item (click)="onLogout()">Cerrar sesión</a>
+        </mat-nav-list>
+      </mat-sidenav>
 
-    <mat-progress-bar
-      *ngIf="loading"
-      mode="indeterminate"
-      color="accent"
-      class="global-spinner">
-    </mat-progress-bar>
+      <mat-sidenav-content>
+        <mat-toolbar color="primary">
+          <button mat-icon-button (click)="drawer.toggle()">
+            <mat-icon>menu</mat-icon>
+          </button>
+          <span>Panel de Administración</span>
+        </mat-toolbar>
 
-    <router-outlet></router-outlet>
+        <div class="content">
+          <router-outlet></router-outlet>
+        </div>
+
+        <mat-toolbar color="primary" class="footer">
+          © 2025 Mi Empresa
+        </mat-toolbar>
+      </mat-sidenav-content>
+    </mat-sidenav-container>
   `,
   styles: [`
-    mat-toolbar {
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-    }
-    .spacer {
-      flex: 1 1 auto;
-    }
-    .global-spinner {
-      position: fixed;
-      top: 64px;
-      left: 0;
-      width: 100%;
-      z-index: 1000;
-    }
-    router-outlet {
-      display: block;
-      padding: 16px;
-    }
+    .app-container { height: 100vh; }
+    .content { padding: 16px; }
+    .footer { justify-content: center; font-size: 0.9em; }
+    .active { font-weight: bold; }
   `]
 })
 export class AppComponent {
