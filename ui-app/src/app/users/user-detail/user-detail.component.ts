@@ -1,12 +1,11 @@
-
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterModule } from '@angular/router';
-import { MatCardModule } from '@angular/material/card';
+import { Component, OnInit }    from '@angular/core';
+import { Router, ActivatedRoute, RouterModule } from '@angular/router';
+import { CommonModule }          from '@angular/common';
+import { MatCardModule }         from '@angular/material/card';
+import { MatButtonModule }       from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatButtonModule } from '@angular/material/button';
 
-import { UserService, User } from '../../services/user.service';
+import { UserService, User }     from '../../services/user.service';
 
 @Component({
   selector: 'app-user-detail',
@@ -15,57 +14,54 @@ import { UserService, User } from '../../services/user.service';
     CommonModule,
     RouterModule,
     MatCardModule,
-    MatProgressSpinnerModule,
-    MatButtonModule
+    MatButtonModule,
+    MatProgressSpinnerModule
   ],
   template: `
-    <div class="detail-container">
-      <div *ngIf="loading" class="spinner">
-        <mat-spinner diameter="40"></mat-spinner>
-      </div>
-      <div *ngIf="error" class="error">{{ error }}</div>
-      <mat-card *ngIf="!loading && !error && user">
-        <mat-card-title>Usuario {{ user.id }}</mat-card-title>
-        <mat-card-content>
-          <p><strong>Nombre:</strong> {{ user.name }}</p>
-          <p><strong>Email:</strong> {{ user.email }}</p>
-        </mat-card-content>
-        <mat-card-actions>
-          <button mat-button (click)="goBack()">Volver</button>
-        </mat-card-actions>
-      </mat-card>
-    </div>
-  `,
-  styles: [`
-    .detail-container { max-width: 600px; margin: 40px auto; text-align: center; }
-    .spinner { padding: 20px; }
-    .error { color: #c00; padding: 20px; }
-  `]
+    <mat-card *ngIf="!loading && !error">
+      <mat-card-title>{{ user?.name }}</mat-card-title>
+      <mat-card-content>
+        <p><strong>Email:</strong> {{ user?.email }}</p>
+        <p><strong>Edad:</strong> {{ user?.age }}</p>
+      </mat-card-content>
+      <button mat-button color="primary" (click)="goBack()">Volver</button>
+    </mat-card>
+    <div *ngIf="loading"><mat-spinner></mat-spinner></div>
+    <div *ngIf="error" class="error">No se pudo cargar el usuario</div>
+  `
 })
 export class UserDetailComponent implements OnInit {
-  user: User | null = null;
-  loading = false;
-  error: string | null = null;
+  user!: User;
+  loading = true;
+  error = false;
 
   constructor(
-  private userSvc: UserService,
-  private route: ActivatedRoute,
-  private router: Router
-) {}
+    private userSvc: UserService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
 
-ngOnInit(): void {
-  const id = Number(this.route.snapshot.paramMap.get('id'));
-  this.userSvc.getById(id).subscribe({
-    next: u => this.user = u,
-    error: () => this.error = true
-     });
-    } else {
-      this.error = 'ID de usuario inválido';
+  ngOnInit(): void {
+    const idParam = this.route.snapshot.paramMap.get('id');
+    const id = idParam ? Number(idParam) : NaN;
+    if (isNaN(id)) {
+      this.error = true;
       this.loading = false;
+      return;
     }
+    this.userSvc.getById(id).subscribe({
+      next: u => {
+        this.user = u;
+        this.loading = false;
+      },
+      error: () => {
+        this.error = true;
+        this.loading = false;
+      }
+    });
   }
 
   goBack(): void {
-    window.history.back();
+    this.router.navigate(['/users']);
   }
 }
