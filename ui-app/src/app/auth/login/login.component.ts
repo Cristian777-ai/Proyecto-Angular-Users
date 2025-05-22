@@ -1,12 +1,11 @@
-import { CommonModule }           from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators, FormGroup, ReactiveFormsModule } from '@angular/forms';
+// src/app/auth/login/login.component.ts
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
-import { MatFormFieldModule }    from '@angular/material/form-field';
-import { MatInputModule }        from '@angular/material/input';
-import { MatButtonModule }       from '@angular/material/button';
+import { MatFormFieldModule }  from '@angular/material/form-field';
+import { MatInputModule }      from '@angular/material/input';
+import { MatButtonModule }     from '@angular/material/button';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { HttpErrorResponse }     from '@angular/common/http';
 
 import { AuthService } from '../../services/auth.service';
 
@@ -14,7 +13,6 @@ import { AuthService } from '../../services/auth.service';
   selector: 'app-login',
   standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     RouterModule,
     MatFormFieldModule,
@@ -59,7 +57,7 @@ import { AuthService } from '../../services/auth.service';
   `]
 })
 export class LoginComponent {
-  form!: FormGroup;  // declara sin inicializar
+  form: FormGroup;
 
   constructor(
     private fb: FormBuilder,
@@ -67,24 +65,33 @@ export class LoginComponent {
     private router: Router,
     private snack: MatSnackBar
   ) {
-    // aquí ya fb está disponible
+    // Inicializamos el form aquí, después de que fb esté inyectado
     this.form = this.fb.group({
       username: ['', Validators.required],
       password: ['', Validators.required]
     });
+  }
 
   onSubmit(): void {
     if (this.form.invalid) { return; }
+
     const { username, password } = this.form.value;
-    this.auth.login(username!, password!).subscribe({
-      next: resp => {
-        console.log('login ok, redirigiendo a /users');
-        this.snack.open('Bienvenido', 'Cerrar', { duration: 3000, verticalPosition: 'top' });
+    this.auth.login(username, password).subscribe({
+      next: () => {
+        this.snack.open('Bienvenido', 'Cerrar', {
+          duration: 3000,
+          verticalPosition: 'top'
+        });
         this.router.navigate(['/users']);
       },
       error: err => {
-        const msg = err.status === 401 ? 'Credenciales inválidas' : 'Error en el servidor';
-        this.snack.open(msg, 'Cerrar', { duration: 3000, verticalPosition: 'top' });
+        const msg = err.status === 401
+          ? 'Credenciales inválidas'
+          : 'Error en el servidor';
+        this.snack.open(msg, 'Cerrar', {
+          duration: 3000,
+          verticalPosition: 'top'
+        });
       }
     });
   }
