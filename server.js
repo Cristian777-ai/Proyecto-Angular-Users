@@ -9,56 +9,57 @@ const PORT = process.env.PORT || 8080;
 // 1) JSON bodies
 app.use(express.json());
 
-// 2) Carga tu "base de datos" desde db.json en la raíz del proyecto
+// 2) Lee db.json
 const dbFile = path.join(__dirname, 'ui-app/db.json');
 let db = { users: [] };
 try {
   db = JSON.parse(fs.readFileSync(dbFile, 'utf8'));
+  console.log('✅ db.json cargado, usuarios:', db.users.length);
 } catch (err) {
-  console.error('⚠️  No pude leer db.json:', err);
+  console.error('❌ No pude leer db.json:', err);
   process.exit(1);
 }
 
-// 3) API Endpoints (antes del static)
-// 3.1 POST /auth/login
+// 3) API Endpoints
 app.post('/auth/login', (req, res) => {
+  console.log('POST /auth/login', req.body);
   const { username, password } = req.body;
   const user = db.users.find(u => u.username === username);
   if (!user || user.password !== password) {
     return res.status(401).json({ message: 'Credenciales inválidas' });
   }
-  // mock token
   return res.json({ token: 'mock-token' });
 });
 
-// 3.2 GET /users
 app.get('/users', (_req, res) => {
-  // elimina contraseña antes de enviar
+  console.log('GET /users');
   const safe = db.users.map(({ password, ...u }) => u);
   res.json(safe);
 });
 
-// 3.3 GET /users/:id
 app.get('/users/:id', (req, res) => {
+  console.log(`GET /users/${req.params.id}`);
   const id = Number(req.params.id);
   const user = db.users.find(u => u.id === id);
-  if (!user) {
-    return res.status(404).json({ message: 'Usuario no encontrado' });
-  }
+  if (!user) return res.status(404).json({ message: 'Usuario no encontrado' });
   const { password, ...safe } = user;
   res.json(safe);
 });
 
-// 4) Define buildDir apuntando al output correcto de Angular
-//    Ajusta si tu angular.json usa otro outputPath
-const buildDir = path.join(__dirname, 'ui-app', 'dist', 'browser');
-console.log(`📂 Sirviendo Angular desde: ${buildDir}`);
+// 4) Define buildDir (ajusta si tu outputPath es otro)
+const buildDir = path.join(__dirname, 'ui-app', 'dist', 'ui-app', 'browser');
+console.log('📂 buildDir:', buildDir);
 
-// 5) Static middleware
+// 5) Sirve estáticos
+if (!fs.existsSync(buildDir)) {
+  console.error('❌ El buildDir NO existe. Verifica tu ruta y que Heroku ejecutó el build.');
+  process.exit(1);
+}
 app.use(express.static(buildDir));
 
-// 6) Fallback para SPA: cualquier otra ruta, devuelve index.html
-app.get('*', (_req, res) => {
+// 6) SPA fallback: **usa app.use** para capturar TODO lo que no sea API ni estático
+app.use('*', (_req, res) => {
+  console.log('SPA fallback => index.html');
   res.sendFile(path.join(buildDir, 'index.html'));
 });
 
