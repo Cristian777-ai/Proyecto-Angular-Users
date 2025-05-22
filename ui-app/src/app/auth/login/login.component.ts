@@ -14,7 +14,7 @@ import { AuthService } from '../../services/auth.service';
   selector: 'app-login',
   standalone: true,
   imports: [
-    CommonModule,                 // ← aquí
+    CommonModule,                 
     ReactiveFormsModule,
     RouterModule,
     MatFormFieldModule,
@@ -45,7 +45,7 @@ import { AuthService } from '../../services/auth.service';
       </button>
     </form>
   `,
-  styles: [/* tus estilos */]
+  styles: []
 })
 export class LoginComponent {
   form: FormGroup;
